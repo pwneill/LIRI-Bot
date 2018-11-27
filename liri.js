@@ -1,44 +1,85 @@
 require("dotenv").config();
 
-var axios = require("axios");
-
 var keys = require("./keys.js");
+
+var axios = require("axios");
 
 var Spotify = require("node-spotify-api");
 
 var spotify = new Spotify(keys.spotify);
 
-var input = process.argv[2];
+var moment = require("moment")
 
-var track = process.argv[3];
+var app = process.argv[2];
 
-var songQuery = ''
+var input = process.argv[3];
 
-function songSearch () {
-  if (track) {
-    songQuery = track
-  } else {
-    songQuery = "The Sign Ace of Base"
+
+function userApp() {
+  switch (app) {
+    case "spotify-this-song":
+      spotifyAPI();
+      break;
+    case "concert-this":
+      bandsInTownAPI();
+      break;
   }
 }
 
-songSearch()
+function bandsInTownAPI() {
+  concertArr = []
+  axios
+  .get("https://rest.bandsintown.com/artists/"+input+"/events?app_id=codingbootcamp").then(
+    function(response) {
+      response.data.forEach(function(concert) {
+        concertArr.push(concert)
+        console.log(concertArr.length)
+      })
+    }
+  );
+  
+  // This will search the Bands in Town Artist Events API (`"https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp"`) for an artist and render the following information about each event to the terminal:
 
-if (input === "spotify-this-song") {
-  spotify.search({ 
-      type: "track", 
+  //    * Name of the venue
+
+  //    * Venue location
+
+  //    * Date of the Event (use moment to format this as "MM/DD/YYYY")
+}
+
+function spotifyAPI() {
+  var songQuery = "";
+  if (input) {
+    songQuery = input;
+  } else {
+    songQuery = "The Sign Ace of Base";
+  }
+
+  spotify
+    .search({
+      type: "track",
       query: songQuery,
-      limit: 1 
-    }).then(function(response, err) {
-      if (err) console.log(err) 
+      limit: 1
+    })
+    .then(function(response, err) {
+      if (err) console.log(err);
       var songArr = response.tracks.items[0];
-      console.log(songArr)
+      console.log(songArr);
       console.log(
         "\n ---------------------------------------\n" +
-        "Artist: "+songArr.artists[0].name+"\n"+
-        "Song Name: "+songArr.name+"\n"+
-        "Spotify Preview: "+songArr.preview_url+"\n"+
-        "Album: "+songArr.album.name+
-        "\n ---------------------------------------\n")
-    })
+          "Artist: " +
+          songArr.artists[0].name +
+          "\n" +
+          "Song Name: " +
+          songArr.name +
+          "\n" +
+          "Spotify Preview: " +
+          songArr.preview_url +
+          "\n" +
+          "Album: " +
+          songArr.album.name +
+          "\n ---------------------------------------\n"
+      );
+    });
 }
+userApp()
