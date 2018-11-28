@@ -70,7 +70,7 @@ function timestamp () {
   var time = moment().local().format("MM/DD/YYYY HH:mm")
   var timeStamp = String("\n Search Time: " + time + "\n" + " Search Parameter: " + input)
 
-  fs.appendFileSync("./log.txt", timeStamp, function(err) {
+  fs.appendFileSync("./log_file/log.txt", timeStamp, function(err) {
     if (err) throw err;
   });
 }
@@ -79,13 +79,13 @@ function logEntry(entry) {
   var newEntry = Object.values(entry);
   newEntry = String(newEntry).replace(/,/g, " ");
 
-  fs.appendFileSync("./log.txt", newLine, function(err) {
+  fs.appendFileSync("./log_file/log.txt", newLine, function(err) {
     if (err) throw err;
   });
-  fs.appendFileSync("./log.txt", newEntry, function(err) {
+  fs.appendFileSync("./log_file/log.txt", newEntry, function(err) {
     if (err) throw err;
   });
-  fs.appendFileSync("./log.txt", newLine, function(err) {
+  fs.appendFileSync("./log_file/log.txt", newLine, function(err) {
     if (err) throw err;
   })
   console.log("Your data was written to file!");
