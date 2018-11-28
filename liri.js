@@ -105,9 +105,26 @@ function spotifyAPI() {
 }
 
 function omdbAPI() {
-  axios.get(
-    "http://www.omdbapi.com/?t=" + movieQuery + "&y=&plot=short&apikey=trilogy").then(function(response) {
-      console.log(response.data)
+  axios
+    .get(
+      "http://www.omdbapi.com/?t=" +
+        movieQuery +
+        "&y=&plot=short&apikey=trilogy"
+    )
+    .then(function(response) {
+      var movie = response.data;
+      console.log(
+        "\n ---------------------------------------\n" +
+          "Title: " +
+          movie.Title +
+          "\n" +
+          "Year: " +
+          movie.Year +
+          "\n" +
+          "IMDB Rating: " +
+          movie.Ratings[0].Value +
+          "\n ---------------------------------------\n"
+      );
     });
 }
 
