@@ -4,6 +4,8 @@ var keys = require("./keys.js");
 
 var axios = require("axios");
 
+var fs = require("fs");
+
 var Spotify = require("node-spotify-api");
 
 var spotify = new Spotify(keys.spotify);
@@ -18,10 +20,10 @@ var songQuery = "";
 
 var movieQuery = "";
 
-function userApp() {
+function userApp(userInput) {
   checkInput();
 
-  switch (app) {
+  switch (userInput) {
     case "spotify-this-song":
       spotifyAPI();
       break;
@@ -30,6 +32,9 @@ function userApp() {
       break;
     case "movie-this":
       omdbAPI();
+      break;
+    case "do-what-it-says":
+      doRandom();
       break;
   }
 }
@@ -140,4 +145,16 @@ function omdbAPI() {
     });
 }
 
-userApp();
+function doRandom() {
+  var randomArr = []
+  fs.readFile("./random.txt", 'utf8', function(err, data) {
+    if (err) {
+      throw err;
+    } else {
+      randomArr = data.split(",")
+      userApp(randomArr[0])
+    }
+  });
+}
+
+userApp(app);
