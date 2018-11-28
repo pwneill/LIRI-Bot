@@ -65,6 +65,16 @@ function checkInput() {
   }
 }
 
+function timestamp () {
+
+  var time = moment().local().format("MM/DD/YYYY HH:mm")
+  var timeStamp = String("\n Search Time: " + time + "\n" + " Search Parameter: " + input)
+
+  fs.appendFileSync("./log.txt", timeStamp, function(err) {
+    if (err) throw err;
+  });
+}
+
 function logEntry(entry) {
   var newEntry = Object.values(entry);
   newEntry = String(newEntry).replace(/,/g, " ");
@@ -73,18 +83,18 @@ function logEntry(entry) {
     if (err) throw err;
   });
   fs.appendFileSync("./log.txt", newEntry, function(err) {
-    if (err) {
-      throw err;
-    } else {
-      console.log("Your data was appended to file!");
-    }
+    if (err) throw err;
   });
   fs.appendFileSync("./log.txt", newLine, function(err) {
     if (err) throw err;
-  });
+  })
+  console.log("Your data was written to file!");
 }
 
 function bandsInTownAPI() {
+
+  timestamp()
+
   axios
     .get(
       "https://rest.bandsintown.com/artists/" +
@@ -92,6 +102,7 @@ function bandsInTownAPI() {
         "/events?app_id=codingbootcamp"
     )
     .then(function(response) {
+
       response.data.forEach(function(result) {
         var concert = result.venue;
         var date = moment(result.datetime).format("MM/DD/YYYY");
@@ -121,6 +132,9 @@ function bandsInTownAPI() {
 }
 
 function spotifyAPI() {
+
+  timestamp()
+
   spotify
     .search({
       type: "track",
@@ -152,6 +166,7 @@ function spotifyAPI() {
 }
 
 function omdbAPI() {
+
   axios
     .get(
       "http://www.omdbapi.com/?t=" +
@@ -171,7 +186,8 @@ function omdbAPI() {
         Summary: "\n Summary: " + movie.Plot,
         Actors: "\n Starring: " + movie.Actors
       };
-
+      
+      timestamp()
       logEntry(movieEntry);
 
       console.log(
