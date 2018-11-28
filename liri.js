@@ -39,6 +39,28 @@ function userApp(userInput) {
   }
 }
 
+function writeLog() {
+  fs.stat("./log.txt", function(err) {
+    if (err) {
+      console.log("No log exists. Writing log...");
+      fs.writeFile("log.txt", err, function() {
+          console.log("The file has been created");
+        })
+      }
+  });
+}
+
+// checks to see if input is null and assigns a default value if it is
+function checkInput() {
+  if (input) {
+    songQuery = input;
+    movieQuery = input;
+  } else {
+    songQuery = "The Sign Ace of Base";
+    movieQuery = "Mr. Nobody";
+  }
+}
+
 function bandsInTownAPI() {
   axios
     .get(
@@ -68,17 +90,6 @@ function bandsInTownAPI() {
         );
       });
     });
-}
-
-// checks to see if input is null and assigns a default value if it is
-function checkInput() {
-  if (input) {
-    songQuery = input;
-    movieQuery = input;
-  } else {
-    songQuery = "The Sign Ace of Base";
-    movieQuery = "Mr. Nobody";
-  }
 }
 
 function spotifyAPI() {
@@ -118,6 +129,7 @@ function omdbAPI() {
     )
     .then(function(response) {
       var movie = response.data;
+
       console.log(
         "\n ---------------------------------------\n" +
           "Title: " +
@@ -146,16 +158,17 @@ function omdbAPI() {
 }
 
 function doRandom() {
-  var randomArr = []
-  fs.readFile("./random.txt", 'utf8', function(err, data) {
+  var randomArr = [];
+  fs.readFile("./random.txt", "utf8", function(err, data) {
     if (err) {
       throw err;
     } else {
-      randomArr = data.split(",")
-      input = randomArr[1]
-      userApp(randomArr[0])
+      randomArr = data.split(",");
+      input = randomArr[1];
+      userApp(randomArr[0]);
     }
   });
 }
 
-userApp(app);
+// userApp(app);
+writeLog();
