@@ -152,6 +152,7 @@ function doRandom() {
       throw err;
     } else {
       randomArr = data.split(",")
+      input = randomArr[1]
       userApp(randomArr[0])
     }
   });
