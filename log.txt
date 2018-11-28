@@ -1,1 +1,17 @@
-Error: ENOENT: no such file or directory, stat './log.txt'
+
+ ---------------------------------------
+ Artist: Rachel Platten 
+ Song Name: Fight Song 
+ Preview: https://p.scdn.co/mp3-preview/e637c2d18133fe780d89df9e603028661a19c818?cid=a6db93161a00478ead08c6e23abc800c 
+ Album: Wildfire
+ ---------------------------------------
+
+ ---------------------------------------
+ Title: Remember the Titans 
+ Year: 2000 
+ 7.8/10(IMDB) 
+ 73% (Rotten Tomatoes) 
+ Filmed in: USA 
+ Summary: The true story of a newly appointed African-American coach and his high school team on their first season as a racially integrated unit. 
+ Starring: Denzel Washington  Will Patton  Wood Harris  Ryan Hurst
+ ---------------------------------------

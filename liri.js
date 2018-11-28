@@ -20,8 +20,11 @@ var songQuery = "";
 
 var movieQuery = "";
 
+var newLine = "\n ---------------------------------------\n";
+
 function userApp(userInput) {
-  checkInput();
+  writeLog();
+  // checkInput();
 
   switch (userInput) {
     case "spotify-this-song":
@@ -39,26 +42,46 @@ function userApp(userInput) {
   }
 }
 
+// Checks to see if a log already exists and creates one if it doesn't
 function writeLog() {
   fs.stat("./log.txt", function(err) {
     if (err) {
       console.log("No log exists. Writing log...");
       fs.writeFile("log.txt", err, function() {
-          console.log("The file has been created");
-        })
-      }
+        console.log("The file has been created");
+      });
+    }
   });
 }
 
 // checks to see if input is null and assigns a default value if it is
-function checkInput() {
-  if (input) {
-    songQuery = input;
-    movieQuery = input;
-  } else {
-    songQuery = "The Sign Ace of Base";
-    movieQuery = "Mr. Nobody";
-  }
+// function checkInput() {
+//   if (input) {
+//     songQuery = input;
+//     movieQuery = input;
+//   } else {
+//     songQuery = "The Sign Ace of Base";
+//     movieQuery = "Mr. Nobody";
+//   }
+// }
+
+function logEntry(entry) {
+  var newEntry = Object.values(entry)
+  newEntry = String(newEntry).replace(/,/g," ")
+
+  fs.appendFileSync("./log.txt", newLine, function(err) {
+    if (err) throw err;
+  });
+  fs.appendFileSync("./log.txt", newEntry, function(err) {
+    if (err) {
+      throw err;
+    } else {
+      console.log('Your data was appended to file!');
+    }
+  });
+  fs.appendFileSync("./log.txt", newLine, function(err) {
+    if (err) throw err;
+  });
 }
 
 function bandsInTownAPI() {
@@ -72,8 +95,9 @@ function bandsInTownAPI() {
       response.data.forEach(function(result) {
         var concert = result.venue;
         var date = moment(result.datetime).format("MM/DD/YYYY");
+
         console.log(
-          "\n ---------------------------------------\n" +
+          newLine +
             "Venue: " +
             concert.name +
             "\n" +
@@ -86,8 +110,10 @@ function bandsInTownAPI() {
             "\n" +
             "Date: " +
             date +
-            "\n ---------------------------------------\n"
+            newLine
         );
+
+        fs.appendFile("log.txt");
       });
     });
 }
@@ -102,20 +128,23 @@ function spotifyAPI() {
     .then(function(response, err) {
       if (err) console.log(err);
       var songArr = response.tracks.items[0];
+
+      var entry = {
+        Artist: " Artist: " + songArr.artists[0].name,
+        Song_Name: "\n" + " Song Name: " + songArr.name,
+        Preview_URL: "\n" + " Preview: " + songArr.preview_url,
+        Album: "\n" + " Album: " + songArr.album.name,
+      };
+
+      logEntry(entry);
+
       console.log(
-        "\n ---------------------------------------\n" +
-          "Artist: " +
-          songArr.artists[0].name +
-          "\n" +
-          "Song Name: " +
-          songArr.name +
-          "\n" +
-          "Spotify Preview: " +
-          songArr.preview_url +
-          "\n" +
-          "Album: " +
-          songArr.album.name +
-          "\n ---------------------------------------\n"
+        newLine +
+          entry.Artist +
+          entry.Song_Name +
+          entry.Preview_URL +
+          entry.Album +
+          newLine
       );
     });
 }
@@ -130,29 +159,28 @@ function omdbAPI() {
     .then(function(response) {
       var movie = response.data;
 
+      var entry = {
+        Title: " Title: " + movie.Title,
+        Year: "\n" + " Year: " + movie.Year,
+        IMDB_Rating: "\n " + movie.Ratings[0].Value + "(IMDB)",
+        Rotten_Tomatoes_Rating: "\n " + movie.Ratings[1].Value + " (Rotten Tomatoes)",
+        Filmed_in: "\n Filmed in: " + movie.Country,
+        Summary: "\n Summary: " + movie.Plot,
+        Actors: "\n Starring: " + movie.Actors
+      };
+
+      logEntry(entry);
+
       console.log(
-        "\n ---------------------------------------\n" +
-          "Title: " +
-          movie.Title +
-          "\n" +
-          "Year: " +
-          movie.Year +
-          "\n" +
-          "IMDB Rating: " +
-          movie.Ratings[0].Value +
-          "\n" +
-          "Rotten Tomatoes Rating: " +
-          movie.Ratings[1].Value +
-          "\n" +
-          "Filmed in: " +
-          movie.County +
-          "\n" +
-          "Plot summary:" +
-          movie.Plot +
-          "\n" +
-          "Actors: " +
-          movie.Actors +
-          "\n ---------------------------------------\n"
+        newLine +
+          entry.Title +
+          entry.Year +
+          entry.IMDB_Rating +
+          entry.Rotten_Tomatoes_Rating +
+          entry.Filmed_in +
+          entry.Summary +
+          entry.Actors +
+          newLine
       );
     });
 }
@@ -170,5 +198,4 @@ function doRandom() {
   });
 }
 
-// userApp(app);
-writeLog();
+userApp(app);
