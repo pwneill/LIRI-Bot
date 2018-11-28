@@ -23,8 +23,8 @@ var movieQuery = "";
 var newLine = "\n ---------------------------------------\n";
 
 function userApp(userInput) {
-  writeLog();
-  // checkInput();
+  // writeLog();
+  checkInput();
 
   switch (userInput) {
     case "spotify-this-song":
@@ -43,31 +43,31 @@ function userApp(userInput) {
 }
 
 // Checks to see if a log already exists and creates one if it doesn't
-function writeLog() {
-  fs.stat("./log.txt", function(err) {
-    if (err) {
-      console.log("No log exists. Writing log...");
-      fs.writeFile("log.txt", err, function() {
-        console.log("The file has been created");
-      });
-    }
-  });
-}
-
-// checks to see if input is null and assigns a default value if it is
-// function checkInput() {
-//   if (input) {
-//     songQuery = input;
-//     movieQuery = input;
-//   } else {
-//     songQuery = "The Sign Ace of Base";
-//     movieQuery = "Mr. Nobody";
-//   }
+// function writeLog() {
+//   fs.stat("./log.txt", function(err) {
+//     if (err) {
+//       console.log("No log exists. Writing log...");
+//       fs.writeFile("log.txt", err, function() {
+//         console.log("The file has been created");
+//       });
+//     }
+//   });
 // }
 
+// checks to see if input is null and assigns a default value if it is
+function checkInput() {
+  if (input) {
+    songQuery = input;
+    movieQuery = input;
+  } else {
+    songQuery = "The Sign Ace of Base";
+    movieQuery = "Mr. Nobody";
+  }
+}
+
 function logEntry(entry) {
-  var newEntry = Object.values(entry)
-  newEntry = String(newEntry).replace(/,/g," ")
+  var newEntry = Object.values(entry);
+  newEntry = String(newEntry).replace(/,/g, " ");
 
   fs.appendFileSync("./log.txt", newLine, function(err) {
     if (err) throw err;
@@ -76,7 +76,7 @@ function logEntry(entry) {
     if (err) {
       throw err;
     } else {
-      console.log('Your data was appended to file!');
+      console.log("Your data was appended to file!");
     }
   });
   fs.appendFileSync("./log.txt", newLine, function(err) {
@@ -96,24 +96,26 @@ function bandsInTownAPI() {
         var concert = result.venue;
         var date = moment(result.datetime).format("MM/DD/YYYY");
 
+        var concertEntry = {
+          Venue: " Venue: " + concert.name,
+          Location:
+          "\n " +
+          concert.city + " " +
+          concert.region + " " +
+          concert.region + " " +
+          concert.country,
+          Date: "\n " + date
+        };
+
+        logEntry(concertEntry);
+
         console.log(
           newLine +
-            "Venue: " +
-            concert.name +
-            "\n" +
-            "Location: " +
-            concert.city +
-            " " +
-            concert.region +
-            " " +
-            concert.country +
-            "\n" +
-            "Date: " +
-            date +
-            newLine
+          concertEntry.Venue +
+          concertEntry.Location +
+          concertEntry.Date +
+          newLine
         );
-
-        fs.appendFile("log.txt");
       });
     });
 }
@@ -129,22 +131,22 @@ function spotifyAPI() {
       if (err) console.log(err);
       var songArr = response.tracks.items[0];
 
-      var entry = {
+      var songEntry = {
         Artist: " Artist: " + songArr.artists[0].name,
         Song_Name: "\n" + " Song Name: " + songArr.name,
         Preview_URL: "\n" + " Preview: " + songArr.preview_url,
-        Album: "\n" + " Album: " + songArr.album.name,
+        Album: "\n" + " Album: " + songArr.album.name
       };
 
-      logEntry(entry);
+      logEntry(songEntry);
 
       console.log(
         newLine +
-          entry.Artist +
-          entry.Song_Name +
-          entry.Preview_URL +
-          entry.Album +
-          newLine
+        songEntry.Artist +
+        songEntry.Song_Name +
+        songEntry.Preview_URL +
+        songEntry.Album +
+        newLine
       );
     });
 }
@@ -159,28 +161,29 @@ function omdbAPI() {
     .then(function(response) {
       var movie = response.data;
 
-      var entry = {
+      var movieEntry = {
         Title: " Title: " + movie.Title,
         Year: "\n" + " Year: " + movie.Year,
         IMDB_Rating: "\n " + movie.Ratings[0].Value + "(IMDB)",
-        Rotten_Tomatoes_Rating: "\n " + movie.Ratings[1].Value + " (Rotten Tomatoes)",
+        Rotten_Tomatoes_Rating:
+          "\n " + movie.Ratings[1].Value + " (Rotten Tomatoes)",
         Filmed_in: "\n Filmed in: " + movie.Country,
         Summary: "\n Summary: " + movie.Plot,
         Actors: "\n Starring: " + movie.Actors
       };
 
-      logEntry(entry);
+      logEntry(movieEntry);
 
       console.log(
         newLine +
-          entry.Title +
-          entry.Year +
-          entry.IMDB_Rating +
-          entry.Rotten_Tomatoes_Rating +
-          entry.Filmed_in +
-          entry.Summary +
-          entry.Actors +
-          newLine
+        movieEntry.Title +
+        movieEntry.Year +
+        movieEntry.IMDB_Rating +
+        movieEntry.Rotten_Tomatoes_Rating +
+        movieEntry.Filmed_in +
+        movieEntry.Summary +
+        movieEntry.Actors +
+        newLine
       );
     });
 }
