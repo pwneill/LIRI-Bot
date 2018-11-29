@@ -6,15 +6,13 @@ var axios = require("axios");
 
 var fs = require("fs");
 
+var inquirer = require('inquirer');
+
 var Spotify = require("node-spotify-api");
 
 var spotify = new Spotify(keys.spotify);
 
 var moment = require("moment");
-
-var app = process.argv[2];
-
-var input = process.argv[3];
 
 var songQuery = "";
 
@@ -22,37 +20,42 @@ var movieQuery = "";
 
 var newLine = "\n ---------------------------------------\n";
 
-function userApp(userInput) {
-  // writeLog();
-  checkInput();
+var input = ''
 
-  switch (userInput) {
-    case "spotify-this-song":
-      spotifyAPI();
-      break;
-    case "concert-this":
-      bandsInTownAPI();
-      break;
-    case "movie-this":
-      omdbAPI();
-      break;
-    case "do-what-it-says":
-      doRandom();
-      break;
-  }
+function selection () {
+  inquirer
+  .prompt([
+      {
+        type: "list",
+        message: "Welcome to LIRI Bot! Please select one of the following options",
+        choices: ["spotify-this-song", "concert-this", "movie-this", "do-what-it-says"],
+        name: "app"
+      },
+      {
+        name: "input",
+        message: "What would you like to search for?"
+      }
+    ]).then (function (answers) {
+      input = answers.input
+      checkInput()
+
+      switch (answers.app) {
+        case "spotify-this-song":
+          spotifyAPI();
+          break;
+        case "concert-this":
+          bandsInTownAPI();
+          break;
+        case "movie-this":
+          omdbAPI();
+          break;
+        case "do-what-it-says":
+          doRandom();
+          break;
+    }
+  })
 }
 
-// Checks to see if a log already exists and creates one if it doesn't
-// function writeLog() {
-//   fs.stat("./log.txt", function(err) {
-//     if (err) {
-//       console.log("No log exists. Writing log...");
-//       fs.writeFile("log.txt", err, function() {
-//         console.log("The file has been created");
-//       });
-//     }
-//   });
-// }
 
 // checks to see if input is null and assigns a default value if it is
 function checkInput() {
@@ -217,4 +220,4 @@ function doRandom() {
   });
 }
 
-userApp(app);
+selection()
