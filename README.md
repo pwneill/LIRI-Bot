@@ -19,8 +19,9 @@ Selecting this option will search the Bands in Town Artist Events API for an art
 * Name of the venue
 * Venue location
 * Date of the Event 
-* If no band is entered, it will default to search for 'Weezer'
 ```
+* If no band is entered, it will default to search for The Pixies
+
 
 #### Spotify-this-song
 
@@ -31,9 +32,9 @@ Selecting this option will search the Spotify API for an artist and render the f
 * The song's name
 * A preview link of the song from Spotify
 * The album that the song is from
+```
 * If no song is entered, it will default to search for "The Sign" by Ace of Base
 
-```
 
 #### movie-this
 
@@ -49,7 +50,7 @@ Selecting this option will search the OMDB API for a movie and render the follow
 * Plot of the movie.
 * Actors in the movie.
 ```
-
+* if no movie is entered, it will default to search for Mr. Nobody
 
 #### do-what-it-says
 
