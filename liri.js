@@ -45,7 +45,7 @@ function selection() {
         doRandom();
         return;
       } else {
-         app = answers.app;
+        app = answers.app;
         inquirer
           .prompt([
             {
@@ -90,12 +90,18 @@ function checkInput() {
   }
 }
 
+// creates a timestamp of when the search is run to log
 function timestamp() {
   var time = moment()
     .local()
     .format("MM/DD/YYYY HH:mm");
   var timeStamp = String(
-    "\n Search Time: " + time + "\n" + " Search Parameter: " + input
+    "\n Search Time: " +
+      time +
+      "\nCommand: " +
+      app +
+      "\nSearch Parameter: " +
+      input
   );
 
   fs.appendFileSync("./log.txt", timeStamp, function(err) {
@@ -104,19 +110,20 @@ function timestamp() {
 }
 
 function logEntry(entry) {
-  var newEntry = Object.values(entry);
-  newEntry = String(newEntry).replace(/,/g, " ");
 
   fs.appendFileSync("./log.txt", newLine, function(err) {
     if (err) throw err;
   });
-  fs.appendFileSync("./log.txt", newEntry, function(err) {
+  fs.appendFileSync("./log.txt", entry, function(err) {
     if (err) throw err;
   });
   fs.appendFileSync("./log.txt", newLine, function(err) {
     if (err) throw err;
   });
   console.log("Your data was written to file!");
+  console.log(newLine + entry + newLine);
+
+  
 }
 
 function bandsInTownAPI() {
@@ -133,10 +140,9 @@ function bandsInTownAPI() {
         var concert = result.venue;
         var date = moment(result.datetime).format("MM/DD/YYYY");
 
-        var concertEntry = {
-          Venue: " Venue: " + concert.name,
-          Location:
-            "\n " +
+        var concertEntry = [
+          "Venue: " + concert.name,
+          "Location: " +
             concert.city +
             " " +
             concert.region +
@@ -144,18 +150,10 @@ function bandsInTownAPI() {
             concert.region +
             " " +
             concert.country,
-          Date: "\n " + date
-        };
+          "Date: " + date
+        ].join("\n");
 
         logEntry(concertEntry);
-
-        console.log(
-          newLine +
-            concertEntry.Venue +
-            concertEntry.Location +
-            concertEntry.Date +
-            newLine
-        );
       });
     });
 }
@@ -173,23 +171,14 @@ function spotifyAPI() {
       if (err) console.log(err);
       var songArr = response.tracks.items[0];
 
-      var songEntry = {
-        Artist: " Artist: " + songArr.artists[0].name,
-        Song_Name: "\n" + " Song Name: " + songArr.name,
-        Preview_URL: "\n" + " Preview: " + songArr.preview_url,
-        Album: "\n" + " Album: " + songArr.album.name
-      };
+      var songEntry = [
+        "Artist: " + songArr.artists[0].name,
+        "Song Name: " + songArr.name,
+        "Preview: " + songArr.preview_url,
+        "Album: " + songArr.album.name
+      ].join("\n");
 
       logEntry(songEntry);
-
-      console.log(
-        newLine +
-          songEntry.Artist +
-          songEntry.Song_Name +
-          songEntry.Preview_URL +
-          songEntry.Album +
-          newLine
-      );
     });
 }
 
@@ -203,31 +192,18 @@ function omdbAPI() {
     .then(function(response) {
       var movie = response.data;
 
-      var movieEntry = {
-        Title: " Title: " + movie.Title,
-        Year: "\n" + " Year: " + movie.Year,
-        IMDB_Rating: "\n " + movie.Ratings[0].Value + "(IMDB)",
-        Rotten_Tomatoes_Rating:
-          "\n " + movie.Ratings[1].Value + " (Rotten Tomatoes)",
-        Filmed_in: "\n Filmed in: " + movie.Country,
-        Summary: "\n Summary: " + movie.Plot,
-        Actors: "\n Starring: " + movie.Actors
-      };
+      var movieEntry = [
+        "Title: " + movie.Title,
+        "Year: " + movie.Year,
+        movie.Ratings[0].Value + "(IMDB)",
+        movie.Ratings[1].Value + " (Rotten Tomatoes)",
+        "Filmed in: " + movie.Country,
+        "Summary: " + movie.Plot,
+        "Starring: " + movie.Actors
+      ].join("\n");
 
       timestamp();
       logEntry(movieEntry);
-
-      console.log(
-        newLine +
-          movieEntry.Title +
-          movieEntry.Year +
-          movieEntry.IMDB_Rating +
-          movieEntry.Rotten_Tomatoes_Rating +
-          movieEntry.Filmed_in +
-          movieEntry.Summary +
-          movieEntry.Actors +
-          newLine
-      );
     });
 }
 
@@ -239,7 +215,7 @@ function doRandom() {
     } else {
       randomArr = data.split(",");
       input = randomArr[1];
-      app = randomArr[0]
+      app = randomArr[0];
       appSelect(app);
     }
   });
